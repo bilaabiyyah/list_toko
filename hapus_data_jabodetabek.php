@@ -1,25 +1,37 @@
 <?php
 include 'koneksi.php';
 
-$id= $_POST['id'];
 
-$query=mysqli_query($conn, "
-DELETE FROM jabodetabek WHERE id='$id'
-");
+if ($_REQUEST) {
+    $action = $_REQUEST["action"];
+    function fetch($rs, $call)
+    {
+        switch ($call) {
+            case "name":
+                $fetch = @mysqli_fetch_assoc($rs);
+                break;
+            case "number":
+                $fetch = @mysqli_fetch_row($rs);
+        }
+        return $fetch;
+    }
 
-if ($query){
-    ?>
-    <script type="text/javascript">
-        alert("Hapus Data Berhasil");
-        window.location='jabodetabek.php';
-    </script>
-    <?php
-}else{
-    ?>
-    <script type="text/javascript">
-        alert("Terjadi Kesalahan");
-        window.location='jabodetabek.php';
-    </script>
-    <?php
+    if ($action === 'deleteData') {
+
+        $id = $_GET['id'];
+
+        $sql = "DELETE FROM jabodetabek WHERE id='$id'";
+
+        $result = mysqli_query($conn, $sql);
+
+        // echo $sql;
+
+        if ($result) {
+            echo "Data Deleting Successfully";
+            return true;
+        } else {
+            echo "Error adding customer.";
+            return http_response_code(500);
+        }
+    }
 }
-?>
